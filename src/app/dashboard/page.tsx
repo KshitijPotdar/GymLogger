@@ -22,6 +22,9 @@ interface Workout {
 export default function Dashboard() {
   // **STATE MANAGEMENT** - This stores data that can change
   // useState returns [currentValue, functionToUpdateIt]
+
+  const [isFormOpen, setIsFormOpen] = useState(false);
+
   const [workouts, setWorkouts] = useState<Workout[]>([
     {
       id: '1',
@@ -53,6 +56,14 @@ export default function Dashboard() {
 
   // **HANDLER FUNCTION** - Runs when user clicks "Log New Workout"
   const handleNewWorkout = () => {
+
+    setIsFormOpen(true)
+    
+
+
+
+
+
     console.log('Opening new workout form');
     // TODO: Open modal or redirect to workout form page
   };
@@ -63,7 +74,7 @@ export default function Dashboard() {
       <header className='bg-white shadow'>
         <div className='mx-auto max-w-6xl px-4 py-6 sm:px-6 lg:px-8'>
           <div className='flex items-center justify-between'>
-            <h1 className='text-3xl font-bold text-blue-600'>GymLogger</h1>
+            <h1 className='text-3xl font-bold text-yellow-600'>GymLogger</h1>
             <div className='flex items-center gap-4'>
               <span className='text-gray-700'>Welcome, User</span>
               <button
