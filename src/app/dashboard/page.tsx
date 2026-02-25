@@ -1,9 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
-// **TYPE DEFINITIONS** - This tells TypeScript what data looks like
-// Think of it as describing the shape of your data
 interface Exercise {
   name: string;
   weight?: number;
@@ -14,15 +13,13 @@ interface Exercise {
 interface Workout {
   id: string;
   date: string;
-  workoutType: string; // e.g., "Chest & Triceps"
+  workoutType: string;
   exercises: Exercise[];
-  duration: number; // in minutes
+  duration: number;
 }
 
 export default function Dashboard() {
-  // **STATE MANAGEMENT** - This stores data that can change
-  // useState returns [currentValue, functionToUpdateIt]
-
+  const router = useRouter();
   const [isFormOpen, setIsFormOpen] = useState(false);
 
   const [workouts, setWorkouts] = useState<Workout[]>([
@@ -48,38 +45,28 @@ export default function Dashboard() {
     },
   ]);
 
-  // **HANDLER FUNCTION** - Runs when user clicks logout
   const handleLogout = () => {
     console.log('User logged out');
-    // TODO: Later we'll redirect to login page with: window.location.href = '/login'
   };
 
-  // **HANDLER FUNCTION** - Runs when user clicks "Log New Workout"
   const handleNewWorkout = () => {
-
-    setIsFormOpen(true)
-    
-
-
-
-
-
-    console.log('Opening new workout form');
-    // TODO: Open modal or redirect to workout form page
+    console.log('Navigating to new workout page');
+    router.push('/new-workout');
   };
 
   return (
-    <div className='min-h-screen bg-gray-50'>
+    <div className='min-h-screen bg-m3-background text-m3-text-main font-sans'>
+      
       {/* ===== HEADER ===== */}
-      <header className='bg-white shadow'>
+      <header className='bg-m3-surface border-b border-m3-surface-variant'>
         <div className='mx-auto max-w-6xl px-4 py-6 sm:px-6 lg:px-8'>
           <div className='flex items-center justify-between'>
-            <h1 className='text-3xl font-bold text-yellow-600'>GymLogger</h1>
+            <h1 className='text-3xl font-bold text-m3-primary'>GymLogger</h1>
             <div className='flex items-center gap-4'>
-              <span className='text-gray-700'>Welcome, User</span>
+              <span className='text-m3-text-muted'>Welcome, Kshitij</span>
               <button
                 onClick={handleLogout}
-                className='rounded-md bg-red-600 px-4 py-2 text-white hover:bg-red-700 transition-colors'
+                className='rounded-m3-btn border border-red-500/50 bg-transparent px-5 py-2 text-red-400 hover:bg-red-500/10 transition-colors'
               >
                 Logout
               </button>
@@ -90,26 +77,24 @@ export default function Dashboard() {
 
       {/* ===== MAIN CONTENT ===== */}
       <main className='mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8'>
+        
         {/* === STATS SECTION === */}
         <div className='mb-8 grid grid-cols-1 gap-4 sm:grid-cols-3'>
-          {/* Stat Card 1 */}
-          <div className='rounded-lg bg-white p-6 shadow'>
-            <p className='text-sm text-gray-600'>Total Workouts</p>
-            <p className='text-3xl font-bold text-blue-600'>
+          <div className='rounded-m3-card bg-m3-surface p-6 shadow-lg'>
+            <p className='text-sm font-medium text-m3-text-muted uppercase tracking-wider'>Total Workouts</p>
+            <p className='text-4xl font-bold text-m3-primary mt-2'>
               {workouts.length}
             </p>
           </div>
 
-          {/* Stat Card 2 */}
-          <div className='rounded-lg bg-white p-6 shadow'>
-            <p className='text-sm text-gray-600'>Current Streak</p>
-            <p className='text-3xl font-bold text-green-600'>5 days</p>
+          <div className='rounded-m3-card bg-m3-surface p-6 shadow-lg'>
+            <p className='text-sm font-medium text-m3-text-muted uppercase tracking-wider'>Current Streak</p>
+            <p className='text-4xl font-bold text-m3-primary mt-2'>5 days</p>
           </div>
 
-          {/* Stat Card 3 */}
-          <div className='rounded-lg bg-white p-6 shadow'>
-            <p className='text-sm text-gray-600'>Total Duration</p>
-            <p className='text-3xl font-bold text-purple-600'>95 min</p>
+          <div className='rounded-m3-card bg-m3-surface p-6 shadow-lg'>
+            <p className='text-sm font-medium text-m3-text-muted uppercase tracking-wider'>Total Duration</p>
+            <p className='text-4xl font-bold text-m3-primary mt-2'>95 min</p>
           </div>
         </div>
 
@@ -117,42 +102,41 @@ export default function Dashboard() {
         <div className='mb-8 flex gap-4'>
           <button
             onClick={handleNewWorkout}
-            className='rounded-md bg-blue-600 px-6 py-3 text-white font-semibold hover:bg-blue-700 transition-colors'
+            className='rounded-m3-btn bg-m3-primary px-8 py-4 text-m3-on-primary font-bold text-lg hover:brightness-110 shadow-lg shadow-m3-primary/20 transition-all active:scale-95'
           >
             + Log New Workout
           </button>
-          <button className='rounded-md bg-gray-600 px-6 py-3 text-white font-semibold hover:bg-gray-700 transition-colors'>
+          <button className='rounded-m3-btn bg-m3-surface-variant px-8 py-4 text-m3-text-main font-semibold hover:brightness-110 transition-all'>
             View History
           </button>
         </div>
 
         {/* === RECENT WORKOUTS SECTION === */}
-        <div className='rounded-lg bg-white shadow'>
-          <div className='border-b border-gray-200 px-6 py-4'>
-            <h2 className='text-2xl font-bold text-gray-800'>Recent Workouts</h2>
+        <div className='rounded-m3-card bg-m3-surface overflow-hidden shadow-lg'>
+          <div className='border-b border-m3-surface-variant px-6 py-5'>
+            <h2 className='text-2xl font-bold text-m3-text-main'>Recent Workouts</h2>
           </div>
 
-          <div className='divide-y divide-gray-200'>
-            {/* Map through workouts array to show each one */}
+          <div className='divide-y divide-m3-surface-variant'>
             {workouts.map((workout) => (
-              <div key={workout.id} className='px-6 py-4'>
-                {/* Workout header with date and type */}
+              <div key={workout.id} className='px-6 py-5 hover:bg-m3-surface-variant/30 transition-colors'>
                 <div className='mb-3 flex items-center justify-between'>
-                  <h3 className='text-lg font-semibold text-gray-800'>
-                    {workout.date} • {workout.workoutType}
+                  <h3 className='text-lg font-semibold text-m3-primary'>
+                    {workout.date} <span className="text-m3-text-muted font-normal">• {workout.workoutType}</span>
                   </h3>
-                  <span className='text-sm text-gray-600'>
+                  <span className='rounded-full bg-m3-surface-variant px-3 py-1 text-sm text-m3-text-muted'>
                     {workout.duration} min
                   </span>
                 </div>
 
-                {/* Exercises list */}
                 <ul className='space-y-2'>
                   {workout.exercises.map((exercise, index) => (
-                    <li key={index} className='text-gray-700'>
-                      <span className='font-medium'>{exercise.name}:</span>{' '}
-                      {exercise.weight && `${exercise.weight} lbs `}
-                      × {exercise.reps} reps ({exercise.sets} sets)
+                    <li key={index} className='text-m3-text-main flex justify-between'>
+                      <span className='font-medium'>{exercise.name}</span>
+                      <span className="text-m3-text-muted">
+                        {exercise.weight && `${exercise.weight} lbs × `}
+                        {exercise.reps} reps ({exercise.sets} sets)
+                      </span>
                     </li>
                   ))}
                 </ul>
@@ -160,9 +144,8 @@ export default function Dashboard() {
             ))}
           </div>
 
-          {/* If no workouts exist, show this message */}
           {workouts.length === 0 && (
-            <div className='px-6 py-12 text-center text-gray-500'>
+            <div className='px-6 py-12 text-center text-m3-text-muted'>
               No workouts yet. Start by logging your first workout!
             </div>
           )}

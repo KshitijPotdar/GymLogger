@@ -1,26 +1,31 @@
 @import "tailwindcss";
 
+@theme {
+  /* Material 3 Dark Palette */
+  --color-m3-background: #0a0a0a;
+  --color-m3-surface: #1c1c1c;
+  --color-m3-surface-variant: #2b2b2b;
+  
+  /* Your specific Yellow/Gold accent */
+  --color-m3-primary: #FFD700; 
+  --color-m3-on-primary: #352d00;
+  
+  /* Text colors */
+  --color-m3-text-main: #e6e1e5;
+  --color-m3-text-muted: #938f99;
+
+  /* Material 3 specific rounding */
+  --radius-m3-card: 28px;
+  --radius-m3-btn: 100px;
+}
+
+/* Base styles to force the dark theme */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  background-color: var(--color-m3-background);
+  color: var(--color-m3-text-main);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
 }

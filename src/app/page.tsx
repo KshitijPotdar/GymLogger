@@ -1,23 +1,38 @@
+import React from 'react';
+import Link from 'next/link';
+
 export default function Home() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center p-4">
-      <div className="text-center">
-        <h1 className="text-5xl font-bold text-white mb-6">GymLogger</h1>
-        <p className="text-xl text-blue-100 mb-8">Track your workouts, achieve your goals</p>
+    <div className="flex min-h-screen items-center justify-center bg-m3-background p-4 font-sans">
+      <div className="text-center max-w-2xl mx-auto">
         
-        <div className="flex flex-col gap-4 sm:flex-row sm:justify-center">
-          <a
+        {/* Main Title */}
+        <h1 className="mb-6 text-6xl font-bold text-m3-primary drop-shadow-lg">
+          GymLogger
+        </h1>
+        
+        {/* Subtitle */}
+        <p className="mb-10 text-xl text-m3-text-muted font-medium">
+          Track your workouts, achieve your goals
+        </p>
+        
+        {/* Call to Action Buttons */}
+        <div className="flex flex-col gap-5 sm:flex-row sm:justify-center">
+          
+          <Link
             href="/login"
-            className="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors"
+            className="rounded-m3-btn bg-m3-primary px-10 py-4 text-m3-on-primary font-bold text-lg hover:brightness-110 shadow-lg shadow-m3-primary/20 transition-all active:scale-95"
           >
             Login
-          </a>
-          <a
+          </Link>
+
+          <Link
             href="/dashboard"
-            className="bg-blue-700 text-white px-8 py-3 rounded-lg font-semibold hover:bg-blue-800 transition-colors"
+            className="rounded-m3-btn bg-m3-surface-variant px-10 py-4 text-m3-text-main font-semibold text-lg hover:brightness-110 transition-all"
           >
             View Dashboard
-          </a>
+          </Link>
+          
         </div>
       </div>
     </div>
