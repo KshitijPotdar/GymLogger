@@ -101,7 +101,7 @@ console.log("API Data:", exercises);
                             >
                                 {/* Made the image much bigger (48) and added shrink-0 */}
                                 <img 
-                                    src={exercise.gifUrl} 
+                                    src={`/api/exercise-image?id=${exercise.id}`} 
                                     alt={exercise.name} 
                                     className="w-48 h-48 rounded-xl object-cover bg-white shrink-0" 
                                 />
