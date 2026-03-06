@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 type Exercise = { id: string; name: string; target: string; gifUrl: string; }
 type WorkoutSet = { id: number; previous: string; kg: number | ''; reps: number | ''; completed: boolean; }
 
-// We added 'settings' to the frontend type!
+
 type LoggedExercise = {
     exercise: Exercise;
     settings: string; 
@@ -24,15 +24,15 @@ export default function NewWorkoutPage() {
     const [isSaving, setIsSaving] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);
 
-    // --- NEW: LIVE TIMER STATE ---
+    // timer
     const [durationInSeconds, setDurationInSeconds] = useState(0);
 
-    // This hook runs the clock! It adds 1 second every 1000 milliseconds.
+    // adds 1 second every 1000 milliseconds
     useEffect(() => {
         const timer = setInterval(() => {
             setDurationInSeconds((prev) => prev + 1);
         }, 1000);
-        return () => clearInterval(timer); // Clean up when we leave the page
+        return () => clearInterval(timer); // Clean up when user leaves the page
     }, []);
 
     // Formats seconds into MM:SS for the UI
@@ -54,21 +54,67 @@ export default function NewWorkoutPage() {
         finally { setIsLoading(false); }
     };
 
-    const handleAddExercise = (exercise: Exercise) => {
+  const handleAddExercise = async (exercise: Exercise) => {
+        // prevent duplicates
         if (loggedExercises.some(log => log.exercise.id === exercise.id)) return;
-        const newLoggedExercise: LoggedExercise = {
-            exercise: exercise,
-            settings: '', // Initialize blank settings
-            sets: [{ id: Date.now(), previous: '-', kg: '', reps: '', completed: false }]
-        };
-        setLoggedExercises([...loggedExercises, newLoggedExercise]);
+
+        try {
+            // get history from api
+            const response = await fetch(`/api/previous-exercise?exerciseId=${exercise.id}`);
+            const data = await response.json();
+
+            let initialSets: WorkoutSet[] = [];
+            let previousSettings = '';
+
+            
+            if (data.previousExercise && data.previousExercise.sets.length > 0) {
+                
+                // fetch saved notes
+                previousSettings = data.previousExercise.settings || '';
+
+                // Map over usesr's old sets and create our new starting rows
+                initialSets = data.previousExercise.sets.map((oldSet: any, index: number) => ({
+                    id: Date.now() + index, // Give React a unique ID
+                    previous: `${oldSet.kg}kg x ${oldSet.reps}`, 
+                    kg: '', 
+                    reps: '', 
+                    completed: false
+                }));
+            } else {
+                // blank if no history found
+                initialSets = [
+                    { id: Date.now(), previous: '-', kg: '', reps: '', completed: false }
+                ];
+            }
+
+            
+            const newLoggedExercise: LoggedExercise = {
+                exercise: exercise,
+                settings: previousSettings,
+                sets: initialSets
+            };
+
+           
+            setLoggedExercises(prev => [...prev, newLoggedExercise]);
+
+        } catch (error) {
+            console.error("Failed to load history:", error);
+            
+            
+            const fallbackExercise: LoggedExercise = {
+                exercise: exercise,
+                settings: '',
+                sets: [{ id: Date.now(), previous: '-', kg: '', reps: '', completed: false }]
+            };
+            setLoggedExercises(prev => [...prev, fallbackExercise]);
+        }
     };
 
     const handleRemoveExercise = (exerciseId: string) => {
         setLoggedExercises(loggedExercises.filter(log => log.exercise.id !== exerciseId));
     };
 
-    // --- NEW: Update Settings Text ---
+    //Update Settings Text 
     const handleUpdateSettings = (exerciseId: string, text: string) => {
         setLoggedExercises(loggedExercises.map(log => 
             log.exercise.id === exerciseId ? { ...log, settings: text } : log
@@ -115,7 +161,7 @@ export default function NewWorkoutPage() {
                 body: JSON.stringify({
                     volume: totalVolume,
                     totalSets: totalSets,
-                    duration: durationInSeconds, // Send the timer!
+                    duration: durationInSeconds, // Send the timer
                     loggedExercises: loggedExercises
                 })
             });
@@ -163,7 +209,7 @@ export default function NewWorkoutPage() {
                             </button>
                         </div>
 
-                        {/* ADDED THE TIMER TO THE TOP STATS! */}
+                        {/* ADD THE TIMER TO THE TOP STATS */}
                         <div className="flex justify-between items-center mb-8 bg-m3-background p-4 rounded-m3-card border border-m3-surface-variant">
                             <div className="text-center">
                                 <p className="text-sm text-m3-text-muted font-bold tracking-wider">TIME</p>
