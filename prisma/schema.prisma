@@ -7,10 +7,54 @@ datasource db {
   
 }
 
+// existing model
 model Exercise {
   id           String   @id @default(uuid())
   name         String   @unique
   targetMuscle String
   equipment    String
   createdAt    DateTime @default(now())
+}
+
+// models for logging workouts
+
+model Workout {
+  id        String           @id @default(uuid())
+  createdAt DateTime         @default(now())
+  volume    Float
+  totalSets Int
+  duration  Int              @default(0)
+  
+  // A workout can have multiple logged exercises
+  exercises LoggedExercise[] 
+}
+
+model LoggedExercise {
+  id         String       @id @default(uuid())
+  
+  // This links the LoggedExercise back to its parent Workout
+  workoutId  String
+  workout    Workout      @relation(fields: [workoutId], references: [id], onDelete: Cascade)
+  
+  // Storing the API data so we don't have to fetch it again just to view history
+  apiId      String   
+  name       String
+  target     String
+  settings   String?
+  
+  // An exercise has multiple sets
+  sets       WorkoutSet[]
+}
+
+model WorkoutSet {
+  id               String         @id @default(uuid())
+  
+  // This links the WorkoutSet back to its parent LoggedExercise
+  loggedExerciseId String
+  loggedExercise   LoggedExercise @relation(fields: [loggedExerciseId], references: [id], onDelete: Cascade)
+  
+  setNumber        Int
+  kg               Float
+  reps             Int
+  completed        Boolean        @default(false)
 }
