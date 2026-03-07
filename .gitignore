@@ -45,3 +45,5 @@ next-env.d.ts
 # Prisma 7 specific
 /prisma/migrations
 .prisma/
+# clerk configuration (can include secrets)
+/.clerk/

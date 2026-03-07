@@ -21,12 +21,14 @@ function getWorkoutTitle(exercises: any[]) {
   if (targets.length >= 3) return "Full Body";
   
   return "General Workout";
-
-
 }
 
-export default async function Dashboard() {
+// Next.js passes URL parameters via searchParams
+export default async function Dashboard({ searchParams }: { searchParams: { view?: string } }) {
    
+  // check if our secret key is in the URL
+  const params = await searchParams;
+  const isRecruiter = params.view === 'resume1703';
    
   const workouts = await prisma.workout.findMany({
     orderBy: { createdAt: 'desc' }, // Newest first by default 
@@ -89,14 +91,22 @@ export default async function Dashboard() {
         </div>
 
         {/* === ACTION BUTTONS === */}
-        <div className='mb-8 flex gap-4'>
+        <div className='mb-8 flex flex-col sm:flex-row gap-4'>
+          {/* Keep the badge so they know they are using a VIP pass */}
+          {isRecruiter && (
+            <div className="bg-m3-surface-variant text-m3-text-main px-6 py-4 rounded-m3-btn font-bold border border-m3-primary/30 flex items-center gap-2">
+              <span>👀</span> Guest Mode
+            </div>
+          )}
           
+          {/* Smart Link: Passes the secret code if they are a recruiter! */}
           <Link
-            href="/new-workout"
+            href={isRecruiter ? "/new-workout?view=resume1703" : "/new-workout"}
             className='rounded-m3-btn bg-m3-primary px-8 py-4 text-m3-on-primary font-bold text-lg hover:brightness-110 shadow-lg shadow-m3-primary/20 transition-all active:scale-95 text-center'
           >
             + Log New Workout
           </Link>
+
           <button className='rounded-m3-btn bg-m3-surface-variant px-8 py-4 text-m3-text-main font-semibold hover:brightness-110 transition-all'>
             View History
           </button>

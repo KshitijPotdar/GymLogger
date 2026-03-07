@@ -1,5 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
+import { SignInButton, Show } from '@clerk/nextjs';
 
 export default function Home() {
   return (
@@ -16,22 +17,27 @@ export default function Home() {
           Track your workouts, achieve your goals
         </p>
         
-        {/* Call to Action Buttons */}
         <div className="flex flex-col gap-5 sm:flex-row sm:justify-center">
           
-          <Link
-            href="/login"
-            className="rounded-m3-btn bg-m3-primary px-10 py-4 text-m3-on-primary font-bold text-lg hover:brightness-110 shadow-lg shadow-m3-primary/20 transition-all active:scale-95"
-          >
-            Login
-          </Link>
+          {/* only shows to non logged in users*/}
+          <Show when="signed-out">
+            {/* Added forceRedirectUrl so it takes them straight to the dashboard */}
+            <SignInButton mode="modal" forceRedirectUrl="/dashboard">
+              <button className="rounded-m3-btn bg-m3-primary px-10 py-4 text-m3-on-primary font-bold text-lg hover:brightness-110 shadow-lg shadow-m3-primary/20 transition-all active:scale-95">
+                Login
+              </button>
+            </SignInButton>
+          </Show>
 
-          <Link
-            href="/dashboard"
-            className="rounded-m3-btn bg-m3-surface-variant px-10 py-4 text-m3-text-main font-semibold text-lg hover:brightness-110 transition-all"
-          >
-            View Dashboard
-          </Link>
+          {/*ONLY SHOW TO LOGGED IN USERS */}
+          <Show when="signed-in">
+            <Link
+              href="/dashboard"
+              className="rounded-m3-btn bg-m3-surface-variant px-10 py-4 text-m3-text-main font-semibold text-lg hover:brightness-110 transition-all"
+            >
+              Go to Dashboard
+            </Link>
+          </Show>
           
         </div>
       </div>

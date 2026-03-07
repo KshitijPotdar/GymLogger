@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 type Exercise = { id: string; name: string; target: string; gifUrl: string; }
 type WorkoutSet = { id: number; previous: string; kg: number | ''; reps: number | ''; completed: boolean; }
@@ -15,6 +15,7 @@ type LoggedExercise = {
 
 export default function NewWorkoutPage() {
     const router = useRouter();
+    const searchParams = useSearchParams();
     const [searchQuery, setSearchQuery] = useState('');
     const [exercises, setExercises] = useState<Exercise[]>([]); 
     const [isLoading, setIsLoading] = useState(false); 
@@ -26,6 +27,12 @@ export default function NewWorkoutPage() {
 
     // timer
     const [durationInSeconds, setDurationInSeconds] = useState(0);
+
+
+    // Check if they are a recruiter
+    const isRecruiter = searchParams.get('view') === 'resume1703';
+    // Create the safe URL to return to
+    const dashboardUrl = isRecruiter ? '/dashboard?view=resume1703' : '/dashboard';
 
     // adds 1 second every 1000 milliseconds
     useEffect(() => {
@@ -186,7 +193,10 @@ export default function NewWorkoutPage() {
                     <p className="text-m3-text-muted text-center mb-8 text-lg">
                         You crushed <span className="font-bold text-m3-text-main">{totalSets} sets</span> for a total volume of <span className="font-bold text-m3-text-main">{totalVolume} kg</span> in <span className="font-bold text-m3-text-main">{formattedTime()}</span>.
                     </p>
-                    <button onClick={() => router.push('/dashboard')} className="w-full bg-m3-primary text-m3-background py-4 rounded-m3-btn font-bold text-lg hover:opacity-90 transition-opacity">
+                    <button 
+                        onClick={() => router.push(dashboardUrl)} 
+                        className="w-full bg-m3-primary text-m3-background py-4 rounded-m3-btn font-bold text-lg hover:opacity-90 transition-opacity"
+                    >
                         Back to Dashboard
                     </button>
                 </div>
