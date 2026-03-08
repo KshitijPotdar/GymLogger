@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 type Exercise = { id: string; name: string; target: string; gifUrl: string; }
@@ -13,7 +13,7 @@ type LoggedExercise = {
     sets: WorkoutSet[];
 }
 
-export default function NewWorkoutPage() {
+ function WorkoutForm() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const [searchQuery, setSearchQuery] = useState('');
@@ -321,5 +321,12 @@ export default function NewWorkoutPage() {
                 </div>
             </div>
         </div>
+    );
+}
+export default function NewWorkoutPage() {
+    return (
+        <Suspense fallback={<div className="min-h-screen bg-m3-background flex items-center justify-center text-m3-primary font-bold text-xl">Loading...</div>}>
+            <WorkoutForm />
+        </Suspense>
     );
 }
