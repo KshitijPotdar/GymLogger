@@ -7,6 +7,7 @@ import { auth } from '@clerk/nextjs/server';
 
 import ImportButton from './ImportButton';
 import SettingsMenu from './SettingsMenu';
+import WorkoutItem from './WorkoutItem';
 
 // Initialize Prisma 
 const connectionString = `${process.env.DIRECT_URL}`;
@@ -52,7 +53,7 @@ export default async function Dashboard({ searchParams }: { searchParams: { view
   return (
     <div className='min-h-screen bg-m3-background text-m3-text-main font-sans'>
       
-     {/* HEADER */}
+      {/* HEADER */}
       <header className='bg-m3-surface border-b border-m3-surface-variant'>
         <div className='mx-auto max-w-6xl px-4 py-6 sm:px-6 lg:px-8'>
           <div className='flex items-center justify-between'>
@@ -60,7 +61,6 @@ export default async function Dashboard({ searchParams }: { searchParams: { view
             <div className='flex items-center gap-4'>
               <span className='text-m3-text-muted'>Welcome, Kshitij</span>
              
-              
               <SettingsMenu />
 
               <Link
@@ -121,7 +121,6 @@ export default async function Dashboard({ searchParams }: { searchParams: { view
             View History
           </button>
 
-          
           {!isRecruiter && <ImportButton />}
         </div>
 
@@ -133,41 +132,14 @@ export default async function Dashboard({ searchParams }: { searchParams: { view
 
           <div className='divide-y divide-m3-surface-variant'>
             {workouts.map((workout) => (
-              <div key={workout.id} className='px-6 py-5 hover:bg-m3-surface-variant/30 transition-colors'>
-                <div className='mb-3 flex items-center justify-between'>
-                  <h3 className='text-lg font-semibold text-m3-primary capitalize'>
-                  {new Date(workout.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
-                  <span className="text-m3-text-muted font-normal ml-2 capitalize">
-      •           {getWorkoutTitle(workout.exercises)}
-                  </span>
-                  </h3>
-                  <span className='rounded-full bg-m3-surface-variant px-3 py-1 text-sm text-m3-text-muted font-bold'>
-                    {workout.volume} kg
-                  </span>
-                </div>
-
-                <ul className='space-y-2'>
-                  {workout.exercises.map((exercise) => {
-                    // calculation to find the heaviest weight lifted in this exercise
-                    const maxWeight = Math.max(...exercise.sets.map(set => set.kg));
-                    const totalReps = exercise.sets.reduce((sum, set) => sum + set.reps, 0);
-
-                    return (
-                      <li key={exercise.id} className='text-m3-text-main flex justify-between'>
-                        <span className='font-medium capitalize'>{exercise.name}</span>
-                        <span className="text-m3-text-muted">
-                          {/* Showing Top Weight and Total Sets */}
-                          {maxWeight > 0 ? `${maxWeight} kg top × ` : ''}
-                          {totalReps} total reps ({exercise.sets.length} sets)
-                        </span>
-                      </li>
-                    );
-                  })}
-                </ul>
-              </div>
+              <WorkoutItem 
+                key={workout.id} 
+                workout={workout} 
+                title={getWorkoutTitle(workout.exercises)} 
+              />
             ))}
           </div>
-
+          
           {workouts.length === 0 && (
             <div className='px-6 py-12 text-center text-m3-text-muted'>
               No workouts yet. Start by logging your first workout!
