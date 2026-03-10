@@ -103,7 +103,7 @@ export default async function Dashboard({ searchParams }: { searchParams: { view
 
         {/*ACTION BUTTONS */}
         <div className='mb-8 flex flex-col sm:flex-row gap-4'>
-          {/* Keep the badge so they know they are using a VIP pass */}
+          
           {isRecruiter && (
             <div className="bg-m3-surface-variant text-m3-text-main px-6 py-4 rounded-m3-btn font-bold border border-m3-primary/30 flex items-center gap-2">
               <span>👀</span> Guest Mode
