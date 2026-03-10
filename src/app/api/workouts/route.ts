@@ -64,3 +64,37 @@ export async function POST(request: Request) {
         return NextResponse.json({ error: "Failed to save workout data." }, { status: 500 });
     }
 }
+
+
+// DELETE function
+
+
+export async function DELETE(request: Request) {
+    try {
+        const { userId } = await auth();
+
+        // Prevent guests or unauthenticated users from wiping data
+        if (!userId) {
+            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        }
+
+        // Delete all workouts for this specific user
+        const deletedData = await prisma.workout.deleteMany({
+            where: {
+                userId: userId,
+            },
+        });
+
+        return NextResponse.json(
+            { success: true, message: `Deleted ${deletedData.count} workouts.` }, 
+            { status: 200 }
+        );
+        
+    } catch (error) {
+        console.error("Error deleting user data:", error);
+        return NextResponse.json(
+            { error: "Failed to delete workout data." }, 
+            { status: 500 }
+        );
+    }
+}

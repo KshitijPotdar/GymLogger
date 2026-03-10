@@ -6,6 +6,7 @@ import { PrismaPg } from '@prisma/adapter-pg';
 import { auth } from '@clerk/nextjs/server';
 
 import ImportButton from './ImportButton';
+import SettingsMenu from './SettingsMenu';
 
 // Initialize Prisma 
 const connectionString = `${process.env.DIRECT_URL}`;
@@ -51,7 +52,7 @@ export default async function Dashboard({ searchParams }: { searchParams: { view
   return (
     <div className='min-h-screen bg-m3-background text-m3-text-main font-sans'>
       
-      {/* HEADER */}
+     {/* HEADER */}
       <header className='bg-m3-surface border-b border-m3-surface-variant'>
         <div className='mx-auto max-w-6xl px-4 py-6 sm:px-6 lg:px-8'>
           <div className='flex items-center justify-between'>
@@ -59,6 +60,9 @@ export default async function Dashboard({ searchParams }: { searchParams: { view
             <div className='flex items-center gap-4'>
               <span className='text-m3-text-muted'>Welcome, Kshitij</span>
              
+              
+              <SettingsMenu />
+
               <Link
                 href="/"
                 className='rounded-m3-btn border border-red-500/50 bg-transparent px-5 py-2 text-red-400 hover:bg-red-500/10 transition-colors'
