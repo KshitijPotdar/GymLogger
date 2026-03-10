@@ -3,6 +3,9 @@ import Link from 'next/link';
 import { PrismaClient } from '@prisma/client';
 import { Pool } from 'pg';
 import { PrismaPg } from '@prisma/adapter-pg';
+import { auth } from '@clerk/nextjs/server';
+
+import ImportButton from './ImportButton';
 
 // Initialize Prisma 
 const connectionString = `${process.env.DIRECT_URL}`;
@@ -26,11 +29,15 @@ function getWorkoutTitle(exercises: any[]) {
 // Next.js passes URL parameters via searchParams
 export default async function Dashboard({ searchParams }: { searchParams: { view?: string } }) {
    
-  // check if our secret key is in the URL
+  // check if resume link
   const params = await searchParams;
   const isRecruiter = params.view === 'resume1703';
+  const { userId } = await auth();
+
+  const whereClause = isRecruiter ? {} : {userId : userId || "guest" };
    
   const workouts = await prisma.workout.findMany({
+    where: whereClause,
     orderBy: { createdAt: 'desc' }, // Newest first by default 
     include: {
       exercises: {
@@ -44,7 +51,7 @@ export default async function Dashboard({ searchParams }: { searchParams: { view
   return (
     <div className='min-h-screen bg-m3-background text-m3-text-main font-sans'>
       
-      {/* ===== HEADER ===== */}
+      {/* HEADER */}
       <header className='bg-m3-surface border-b border-m3-surface-variant'>
         <div className='mx-auto max-w-6xl px-4 py-6 sm:px-6 lg:px-8'>
           <div className='flex items-center justify-between'>
@@ -63,10 +70,10 @@ export default async function Dashboard({ searchParams }: { searchParams: { view
         </div>
       </header>
 
-      {/* ===== MAIN CONTENT ===== */}
+      {/*MAIN CONTENT  */}
       <main className='mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8'>
         
-        {/* === STATS SECTION === */}
+        {/*STATS SECTION  */}
         <div className='mb-8 grid grid-cols-1 gap-4 sm:grid-cols-3'>
           <div className='rounded-m3-card bg-m3-surface p-6 shadow-lg'>
             <p className='text-sm font-medium text-m3-text-muted uppercase tracking-wider'>Total Workouts</p>
@@ -90,7 +97,7 @@ export default async function Dashboard({ searchParams }: { searchParams: { view
           </div>
         </div>
 
-        {/* === ACTION BUTTONS === */}
+        {/*ACTION BUTTONS */}
         <div className='mb-8 flex flex-col sm:flex-row gap-4'>
           {/* Keep the badge so they know they are using a VIP pass */}
           {isRecruiter && (
@@ -99,7 +106,6 @@ export default async function Dashboard({ searchParams }: { searchParams: { view
             </div>
           )}
           
-          {/* Smart Link: Passes the secret code if they are a recruiter! */}
           <Link
             href={isRecruiter ? "/new-workout?view=resume1703" : "/new-workout"}
             className='rounded-m3-btn bg-m3-primary px-8 py-4 text-m3-on-primary font-bold text-lg hover:brightness-110 shadow-lg shadow-m3-primary/20 transition-all active:scale-95 text-center'
@@ -110,9 +116,12 @@ export default async function Dashboard({ searchParams }: { searchParams: { view
           <button className='rounded-m3-btn bg-m3-surface-variant px-8 py-4 text-m3-text-main font-semibold hover:brightness-110 transition-all'>
             View History
           </button>
+
+          
+          {!isRecruiter && <ImportButton />}
         </div>
 
-        {/* === RECENT WORKOUTS SECTION === */}
+        {/*RECENT WORKOUTS SECTION */}
         <div className='rounded-m3-card bg-m3-surface overflow-hidden shadow-lg'>
           <div className='border-b border-m3-surface-variant px-6 py-5'>
             <h2 className='text-2xl font-bold text-m3-text-main'>Recent Workouts</h2>

@@ -2,17 +2,23 @@ import { NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 import { Pool } from 'pg';
 import { PrismaPg } from '@prisma/adapter-pg';
+import { auth } from '@clerk/nextjs/server';
 
 // connect prisma to supabase
 const connectionString = `${process.env.DIRECT_URL}`;
 const pool = new Pool({ connectionString });
 const adapter = new PrismaPg(pool);
 
+
 //Initialize Prisma Client 
 const prisma = new PrismaClient({ adapter });
 
 export async function POST(request: Request) {
     try {
+
+        const { userId } = await auth();
+
+        const finalUserId = userId || "recruiter_guest";
         const body = await request.json();
         const { volume, totalSets,duration, loggedExercises } = body;
 
@@ -24,6 +30,7 @@ export async function POST(request: Request) {
         // Prisma nested writes
         const workout = await prisma.workout.create({
             data: {
+                userId: finalUserId,
                 volume: volume,
                 totalSets: totalSets,
                 duration: duration,

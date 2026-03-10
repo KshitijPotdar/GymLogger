@@ -20,6 +20,7 @@ model Exercise {
 
 model Workout {
   id        String           @id @default(uuid())
+  userId    String           @default("guest")
   createdAt DateTime         @default(now())
   volume    Float
   totalSets Int
