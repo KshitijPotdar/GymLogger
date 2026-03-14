@@ -1,3 +1,4 @@
+// src/app/dashboard/page.tsx
 import React from 'react';
 import Link from 'next/link';
 import { PrismaClient } from '@prisma/client';
@@ -50,6 +51,9 @@ export default async function Dashboard({ searchParams }: { searchParams: { view
     },
   });
 
+  // Calculate total duration in minutes
+  const totalDurationMinutes = Math.floor(workouts.reduce((sum, w) => sum + (w.duration || 0), 0) / 60);
+
   return (
     <div className='min-h-screen bg-m3-background text-m3-text-main font-sans'>
       
@@ -97,7 +101,7 @@ export default async function Dashboard({ searchParams }: { searchParams: { view
 
           <div className='rounded-m3-card bg-m3-surface p-6 shadow-lg'>
             <p className='text-sm font-medium text-m3-text-muted uppercase tracking-wider'>Total Duration</p>
-            <p className='text-4xl font-bold text-m3-primary mt-2'>-- min</p>
+            <p className='text-4xl font-bold text-m3-primary mt-2'>{totalDurationMinutes} min</p>
           </div>
         </div>
 
@@ -117,9 +121,12 @@ export default async function Dashboard({ searchParams }: { searchParams: { view
             + Log New Workout
           </Link>
 
-          <button className='rounded-m3-btn bg-m3-surface-variant px-8 py-4 text-m3-text-main font-semibold hover:brightness-110 transition-all'>
+          <Link
+            href={isRecruiter ? "/history?view=resume1703" : "/history"}
+            className='rounded-m3-btn bg-m3-surface-variant px-8 py-4 text-m3-text-main font-semibold hover:brightness-110 transition-all text-center flex items-center justify-center'
+          >
             View History
-          </button>
+          </Link>
 
           {!isRecruiter && <ImportButton />}
         </div>
